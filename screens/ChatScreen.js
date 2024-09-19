@@ -1,5 +1,6 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // เพิ่มการ import
 import { Icon } from 'react-native-elements';
 
 const initialMessages = {
@@ -23,16 +24,45 @@ const initialMessages = {
 
 const ChatScreen = ({ route, navigation }) => {
   const { chatId, contact } = route.params;
-  const [messages, setMessages] = useState(initialMessages[chatId]);
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
 
+  // ฟังก์ชันในการโหลดข้อความจาก AsyncStorage
+  const loadMessages = async () => {
+    try {
+      const storedMessages = await AsyncStorage.getItem(`chat_${chatId}`);
+      if (storedMessages) {
+        setMessages(JSON.parse(storedMessages));
+      } else {
+        setMessages(initialMessages[chatId] || []); // ถ้าไม่มีข้อมูลใน AsyncStorage ให้ใช้ข้อความเริ่มต้น
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  };
+
+  // ฟังก์ชันในการบันทึกข้อความลงใน AsyncStorage
+  const saveMessages = async (newMessages) => {
+    try {
+      await AsyncStorage.setItem(`chat_${chatId}`, JSON.stringify(newMessages));
+    } catch (error) {
+      console.error('Error saving messages:', error);
+    }
+  };
+
+  
+
+  useEffect(() => {
+    loadMessages(); // โหลดข้อความเมื่อหน้าจอนี้ถูกเปิดครั้งแรก
+  }, []);
+
   const sendMessage = () => {
-    if (message.trim() === '') return; // ไม่ส่งข้อความว่าง
-    setMessages(prevMessages => [
-      ...prevMessages,
-      { id: (prevMessages.length + 1).toString(), text: message, sender: 'me' },
-    ]);
+    if (message.trim() === '') return;
+    const newMessage = { id: (messages.length + 1).toString(), text: message, sender: 'me' };
+    const updatedMessages = [...messages, newMessage];
+    setMessages(updatedMessages);
     setMessage('');
+    saveMessages(updatedMessages); // บันทึกข้อความใหม่ลงใน AsyncStorage
   };
 
   useLayoutEffect(() => {

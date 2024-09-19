@@ -20,7 +20,7 @@ const AppNavigator = () => {
           options={({ route }) => ({ title: route.params.name })} 
         />
         <Stack.Screen name="VoiceCall" component={VoiceCallScreen} />
-<Stack.Screen name="VideoCall" component={VideoCallScreen} /> 
+        <Stack.Screen name="VideoCall" component={VideoCallScreen} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -28,4 +28,4 @@ const AppNavigator = () => {
 
 export default function App() {
   return <AppNavigator />;
-}
+} 

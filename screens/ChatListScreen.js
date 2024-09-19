@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const chats = [
   { id: '1', name: 'Arune', message: 'Whats up?', time: '13:23', avatar: 'https://randomuser.me/api/portraits/women/1.jpg' },
@@ -34,7 +35,7 @@ const ChatListScreen = ({ navigation }) => {
         renderItem={({ item }) => (
           <TouchableOpacity 
             style={styles.chatContainer} 
-            onPress={() => navigation.navigate('Chat', { name: item.name, chatId: item.id })}
+            onPress={() => navigation.navigate('Chat', { name: item.name, chatId: item.id, contact: item })}
           >
             <Avatar
               rounded

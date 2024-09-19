@@ -1,25 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 const VideoCallScreen = ({ route, navigation }) => {
   const { contact } = route.params;
+  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isSpeakerOn, setIsSpeakerOn] = useState(false);
+
+  const toggleVideo = () => {
+    setIsVideoOn(prevState => !prevState);
+    // เรียกใช้ API หรือฟังก์ชันที่เกี่ยวข้องในการปิดวิดีโอ
+  };
+
+  const endCall = () => {
+    // เรียกใช้ API หรือฟังก์ชันที่เกี่ยวข้องในการหยุดสาย
+    navigation.goBack(); // กลับไปที่หน้าก่อนหน้า
+  };
+
+  const toggleSpeaker = () => {
+    setIsSpeakerOn(prevState => !prevState);
+    // เรียกใช้ API หรือฟังก์ชันที่เกี่ยวข้องในการเปิดลำโพง
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.videoContainer}>
-        {/* เพิ่มหน้าจอวิดีโอ */}
+        {/* ในกรณีที่ใช้ video stream ให้แสดงผลใน container นี้ */}
+        {isVideoOn ? (
+          <Text style={{ color: '#fff' }}>Video Stream</Text>
+        ) : (
+          <Text style={{ color: '#fff' }}>Video is off</Text>
+        )}
       </View>
       <Text style={styles.name}>{contact.name}</Text>
       <View style={styles.controls}>
-        <TouchableOpacity onPress={() => { /* เพิ่มฟังก์ชันการปิดวิดีโอ */ }}>
-          <Icon name="video-camera" type="font-awesome" size={30} color="#007AFF" />
+        <TouchableOpacity onPress={toggleVideo}>
+          <Icon
+            name={isVideoOn ? "video-camera" : "video-camera-slash"}
+            type="font-awesome"
+            size={30}
+            color={isVideoOn ? "#007AFF" : "red"}
+          />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => { /* เพิ่มฟังก์ชันการหยุดสาย */ }}>
+        <TouchableOpacity onPress={endCall}>
           <Icon name="phone" type="font-awesome" size={40} color="red" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => { /* เพิ่มฟังก์ชันการเปิดลำโพง */ }}>
-          <Icon name="volume-up" type="font-awesome" size={30} color="#007AFF" />
+        <TouchableOpacity onPress={toggleSpeaker}>
+          <Icon
+            name="volume-up"
+            type="font-awesome"
+            size={30}
+            color={isSpeakerOn ? "green" : "#007AFF"}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -40,6 +72,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
     borderRadius: 10,
     marginVertical: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   name: {
     fontSize: 24,
@@ -53,4 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VideoCallScreen;
+export default VideoCallScreen;    
