@@ -28,10 +28,33 @@ const chats = [
 ];
 
 const ChatListScreen = ({ navigation }) => {
+  const [chatList, setChatList] = useState(chats);
+
+  // ฟังก์ชันในการโหลดข้อความล่าสุดจาก AsyncStorage
+  const loadLastMessages = async () => {
+    const updatedChats = await Promise.all(
+      chats.map(async chat => {
+        const lastMessage = await AsyncStorage.getItem(`lastMessage_${chat.id}`);
+        return {
+          ...chat,
+          message: lastMessage || chat.message, // ถ้าไม่มีข้อความล่าสุดก็ใช้ข้อความเริ่มต้น
+        };
+      })
+    );
+    setChatList(updatedChats);
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadLastMessages(); // โหลดข้อความล่าสุดทุกครั้งที่กลับมาที่หน้านี้
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={chats}
+        data={chatList}
         renderItem={({ item }) => (
           <TouchableOpacity 
             style={styles.chatContainer} 

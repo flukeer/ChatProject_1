@@ -62,8 +62,12 @@ const ChatScreen = ({ route, navigation }) => {
     const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
     setMessage('');
-    saveMessages(updatedMessages); // บันทึกข้อความใหม่ลงใน AsyncStorage
+    saveMessages(updatedMessages); // บันทึกข้อความทั้งหมดลงใน AsyncStorage
+    
+    // บันทึกข้อความล่าสุดลงใน AsyncStorage เพื่อให้ ChatListScreen ใช้งานได้
+    AsyncStorage.setItem(`lastMessage_${chatId}`, message);
   };
+  
 
   useLayoutEffect(() => {
     navigation.setOptions({
