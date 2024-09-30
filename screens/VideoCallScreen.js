@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Camera } from 'expo-camera'; // ตรวจสอบการอิมพอร์ต Camera
+import { Camera } from 'expo-camera';
 import { Icon } from 'react-native-elements';
 
 const VideoCallScreen = ({ route, navigation }) => {
@@ -8,7 +8,7 @@ const VideoCallScreen = ({ route, navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [cameraRef, setCameraRef] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.front); // ตรวจสอบว่าใช้ Camera.Constants.Type ถูกต้อง
+  const [type, setType] = useState(Camera.Constants.Type.front);
 
   useEffect(() => {
     (async () => {
@@ -19,12 +19,18 @@ const VideoCallScreen = ({ route, navigation }) => {
 
   const toggleVideo = () => {
     setIsVideoOn(prevState => !prevState);
-    // เรียกใช้ฟังก์ชันปิดหรือเปิดวิดีโอ
   };
 
   const endCall = () => {
-    // เรียกใช้ฟังก์ชันหยุดสาย
     navigation.goBack();
+  };
+
+  const toggleCameraType = () => {
+    setType(
+      type === Camera.Constants.Type.front
+        ? Camera.Constants.Type.back
+        : Camera.Constants.Type.front
+    );
   };
 
   if (hasPermission === null) {
@@ -40,7 +46,7 @@ const VideoCallScreen = ({ route, navigation }) => {
         {isVideoOn ? (
           <Camera
             style={styles.camera}
-            type={type} // กำหนดชนิดของกล้อง (กล้องหน้า/หลัง)
+            type={type}
             ref={ref => {
               setCameraRef(ref);
             }}
@@ -53,14 +59,22 @@ const VideoCallScreen = ({ route, navigation }) => {
       <View style={styles.controls}>
         <TouchableOpacity onPress={toggleVideo}>
           <Icon
-            name={isVideoOn ? "video-camera" : "video-camera-slash"}
-            type="font-awesome"
+            name={isVideoOn ? 'video-camera' : 'video-camera-slash'}
+            type='font-awesome'
             size={30}
-            color={isVideoOn ? "#007AFF" : "red"}
+            color={isVideoOn ? '#007AFF' : 'red'}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={endCall}>
-          <Icon name="phone" type="font-awesome" size={40} color="red" />
+          <Icon name='phone' type='font-awesome' size={40} color='red' />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={toggleCameraType}>
+          <Icon
+            name='refresh'
+            type='font-awesome'
+            size={30}
+            color={'#007AFF'}
+          />
         </TouchableOpacity>
       </View>
     </View>
