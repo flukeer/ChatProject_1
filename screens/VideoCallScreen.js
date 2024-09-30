@@ -37,7 +37,7 @@ const VideoCallScreen = ({ route, navigation }) => {
     return <View />;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text>ไม่สามารถเข้าถึงกล้องได้</Text>;
   }
 
   return (
@@ -52,7 +52,7 @@ const VideoCallScreen = ({ route, navigation }) => {
             }}
           />
         ) : (
-          <Text style={{ color: '#fff' }}>Video is off</Text>
+          <Text style={{ color: '#fff' }}>วิดีโอปิดอยู่</Text>
         )}
       </View>
       <Text style={styles.name}>{contact.name}</Text>
